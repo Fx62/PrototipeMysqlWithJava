@@ -1,4 +1,3 @@
-
 //package project2;
 
 import java.io.File;
@@ -7,69 +6,72 @@ import java.util.Scanner;
 public class FirstStepsDB {
 
 	static File file = null;
-	static File[] listOfFiles = null;
 	static Scanner sc = new Scanner(System.in);
+	final private static String directory = "Databases/";
+	private static String dataBase;
 	
-	public static void main(String[] args) {
-		boolean mn;
-		do {
-			 mn = menu();
-		} while(!mn);
+	public String getDb() {
+		return dataBase;
+	}
 
+	public void setDb(String dataBase) {
+		FirstStepsDB.dataBase = dataBase;
+	}
+	
+	public String getDirectory() {
+		return directory;
+	}
+
+	public static void main(String[] args) {
+		do {
+		}while (menu());	
 	}
 	
 	public static boolean menu() {
 		boolean control;
-		System.out.println("1 - SHOW DATABASE");
-		System.out.println("2 - USE DATABASE");
-		System.out.println("3 - CREATE DATABASE");
-		System.out.println("4 - DROP DATABASE");
-		try {
-			String input = sc.nextLine();
-			switch (input) {
-			case "1":
-				control = showDatabases();
-				System.out.println(control ? "\n\n" : "Actualmente no existen bases de datos");
-				break;
-			case "2":
-				break;
-			case "3":
-				control = createDatabase();
-				System.out.println(control ? "La nueva base de datos fue creada exitosamente" :
-					"");
-				break;
-			case "4":
-				control = dropDatabase();
-				System.out.println(control ? "La base de datos ha sido borrada"
-						: "La base de datos indicada no existe");
-				break;
-			default:
-				System.out.println("Unicamente son validos los valores del 1 al 4");
+		System.out.println("1 - Mostrar Bases de Datos");
+		System.out.println("2 - Utilizar Base de Datos");
+		System.out.println("3 - Crear nueva Base de Datos");
+		System.out.println("4 - Eliminar Base de Datos");
+		System.out.println("5 - Salir");
+		//String input = sc.nextLine();
+		String input = "2";
+		switch (input) {
+		case "1":
+			control = showDatabases();
+			System.out.println(control ? "\n\n" : "Actualmente no existen bases de datos");
+			break;
+		case "2":
+			control = useDatabase();
+			break;
+		case "3":
+			control = createDatabase();
+			System.out.println(control ? "La nueva base de datos fue creada exitosamente" :
+				"");
+			break;
+		case "4":
+			control = dropDatabase();
+			System.out.println(control ? "La base de datos ha sido borrada"
+					: "");
+			break;
+		case "5":
+			break;
+		default:
+			System.out.println("Unicamente son validos los valores del 1 al 5");
 		}
-		} catch (Exception e) {
-			System.err.println("Unicamente son validos los valores del 1 al 4");
-		}
-		String repeat;
-		System.out.println("Salir [y/N]");
-		repeat = sc.nextLine();
-		if(repeat.equalsIgnoreCase("y")) {
-			return true;
-		} else if(repeat.equalsIgnoreCase("n")){
-			System.out.println("\n\n\n\n");
-			return false;			
-		} else {
-			System.out.println("El valor ingresado no es valido\n\n");
+		if(input.equals("5"))
 			return false;
-		}
+		else
+			return true;
 	}
 
 	public static boolean showDatabases(){
-		file = new File("Databases");
+		file = new File(directory);
 		if(!file.isDirectory()) {
 			file.mkdirs();
 			return false;
 		} else if (file.isDirectory()){
-			listOfFiles = file.listFiles();
+			File[] listOfFiles = file.listFiles();
 			for (File t: listOfFiles) {
 				System.out.println(String.valueOf(t).substring(10));
 			}
@@ -84,7 +86,7 @@ public class FirstStepsDB {
 	}
 	
 	public static boolean createDatabase() {
-		String db = "Databases/";
+		String db = directory;
 		System.out.println("Ingrese el nombre de la nueva base de datos");
 		db += sc.nextLine();
 		file = new File(db);
@@ -102,27 +104,47 @@ public class FirstStepsDB {
 		}
 	}
 	
-	public static boolean dropDatabase() {
-		int i = 0;
-		System.out.println(showDatabases() ? "Ingrese el nombre de la base de datos a borrar"
-				: "No existen bases de datos para ser borradas");
-		String delete;
-		delete = sc.nextLine();
-		for (File t: listOfFiles) {
-			if (String.valueOf(t).substring(10).equals(delete)){
-				System.out.println(t); 
-				t.delete();
-				break;
+	public static boolean existens() {
+		boolean check = showDatabases();
+		System.out.println(check ? "Ingrese el nombre de la base de datos"
+				: "No existen bases de datos actualmente");
+		if(check) {
+			String db = directory; 
+			//db += sc.nextLine();
+			db += "prueba01#";
+			file = new File(db);
+			if(file.exists()) {
+				dataBase = db;
+				return true;
 			} else {
-				i++;
+				System.out.println("La base de datos indicada no existe");
+				return false;
 			}
-		}
-		if (i == listOfFiles.length) {
-			return false;
 		} else {
-			return true;
+			return false;
 		}
 	}
+	
+	public static boolean useDatabase() {
+		if(existens()) {
+			file = new File(dataBase);
+			do {
+			} while (Registers.subMenu(dataBase, directory));
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean dropDatabase() {
+		if(existens()) {
+			file = new File(dataBase);
+			file.delete();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
 }
-
-
