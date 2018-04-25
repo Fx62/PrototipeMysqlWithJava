@@ -1,5 +1,5 @@
 
-package project2;
+//package project2;
 
 import java.io.File;
 import java.util.Scanner;
