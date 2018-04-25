@@ -37,7 +37,7 @@ public class Registers {
 	    	Input.call(directory, db, optRegisters);
 	    	break;
 	    case "4":
-	    	Input.call(directory, db, optRegisters);
+	    	Input.show(directory, db);
 	    	break;
 	    case "5":
 	    	//FirstStepsDB.menu();
