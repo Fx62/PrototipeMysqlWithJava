@@ -34,8 +34,8 @@ public class FirstStepsDB {
 		System.out.println("3 - Crear nueva Base de Datos");
 		System.out.println("4 - Eliminar Base de Datos");
 		System.out.println("5 - Salir");
-		//String input = sc.nextLine();
-		String input = "2";
+		String input = sc.nextLine();
+		//String input = "2";
 		switch (input) {
 		case "1":
 			control = showDatabases();
@@ -110,8 +110,8 @@ public class FirstStepsDB {
 				: "No existen bases de datos actualmente");
 		if(check) {
 			String db = directory; 
-			//db += sc.nextLine();
-			db += "prueba01#";
+			db += sc.nextLine();
+			//db += "prueba01#";
 			file = new File(db);
 			if(file.exists()) {
 				dataBase = db;
