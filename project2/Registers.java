@@ -1,5 +1,6 @@
 //package project2;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -13,11 +14,15 @@ public class Registers {
 	static ArrayList<String> column = new ArrayList<String>();
 	
     public static boolean subMenu(String db, String directory) {
-    	System.out.println("1 - Estructurar Base de Datos");
-    	System.out.println("2 - Describir Base de Datos");
-    	System.out.println("3 - Insertar registros a Base de Datos");
-    	System.out.println("4 - Mostrar registros de Base de Datos");
-    	System.out.println("5 - Regresar al menu anterior");
+    	boolean ex = false;
+    	System.out.println("\t1 - Estructurar Base de Datos");
+    	System.out.println("\t2 - Describir Base de Datos");
+    	System.out.println("\t3 - Insertar registros a Base de Datos");
+    	System.out.println("\t4 - Mostrar registros de Base de Datos");
+    	System.out.println("\t5 - Buscar registros de Base de Datos");
+    	System.out.println("\t6 - Modificar registros de Base de Datos");
+    	System.out.println("\t7 - Eliminar registros de Base de Datos");
+    	System.out.println("\t8 - Regresar al menu anterior");
     	String optRegisters = sc.nextLine();
     	//String optRegisters = "4";
 	    switch (optRegisters) {
@@ -40,13 +45,22 @@ public class Registers {
 	    	Input.show(directory, db);
 	    	break;
 	    case "5":
+	    	value(directory, db, optRegisters);
+	    	break;
+	    case "6":
+	    	value(directory, db, optRegisters);
+	    	break;
+	    case "7":
+	    	value(directory, db, optRegisters);
+	    	break;
+	    case "8":
 	    	//FirstStepsDB.menu();
 	    	break;
 	    default:
 	    	System.out.println("La Option ingresado no es valida");
 	    	break;
 	    }
-	    if (optRegisters.equals("5"))
+	    if (optRegisters.equals("8"))
 	    	return false;
 	    else
 	    	return true;
@@ -54,9 +68,18 @@ public class Registers {
     
     public static boolean estruct(String db, String directory) {
     	System.out.println(db.substring(10));
+    	String temp;
     	//file = new File(db);
-    	System.out.print("Nombre de columna: ");
-		column.add(sc.nextLine());
+    	do {
+    		System.out.print("Nombre de columna: ");
+    		temp = sc.nextLine();
+    		if (temp.equals("*CORRELATIVO*")) {
+    			System.out.println("El nombre de columna no puede ser utilizado, ya que el nombre:\n"
+    					+ "*CORRELATIVO* se encuentra reservado\n");
+    		} else {
+    			column.add(temp);
+    		}
+    	} while(temp.equals("*CORRELATIVO*"));
     	System.out.println("=== TIPOS DE DATOS ===");
 		System.out.println("1 - boolean");
 		System.out.println("2 - char");
@@ -134,5 +157,77 @@ public class Registers {
     	} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
+    }
+    
+    public static boolean value(String directory, String db, String optRegister) {
+    	int find = 0;
+    	boolean control = true;
+    	boolean exists = true;
+    	//System.out.println(Input.spot(directory, db));
+    	if (Input.spot(directory, db) > 0) {
+    		do {
+	    		System.out.print("Ingrese el numero de CORRELATIVO: ");
+	    		try {
+	    			find = Integer.parseInt(sc.nextLine());
+	    			find--;
+	    			if (find >= 0) {
+	    				control = false;
+	    			} else {
+	    				System.out.println("El numero ingresado no es valido*\n");
+	    			}
+	    		} catch(Exception e) {
+	    			System.out.println("El numero ingresado no es valido**\n");
+	    		}
+	    	} while(control);
+			int num = Input.spot(directory, db);
+			num *= (find);
+			if(!optRegister.equals("5")) {
+				File index1 = new File(directory+"."+db.substring(10));
+				if (index1.exists()) {
+			    	RandomAccessFile guide = null;
+			    	ArrayList<String> column = new ArrayList<String>();
+			    	ArrayList<String> opt = new ArrayList<String>();
+			    	try {
+			    		guide = new RandomAccessFile(index1, "r");
+			    		guide.seek(0);
+			    		while(true) {
+			    			column.add(String.valueOf(guide.readByte()));
+			    			opt.add(guide.readUTF());
+			    		}
+			    	} catch (EOFException e) {
+			    	} catch (IOException e) {
+			    		System.out.println(e.getMessage());
+			    	}
+				}
+			}
+			if (optRegister.equals("5")) {
+				if (Input.find(directory, db, num)) {
+					exists = true;
+				} else {
+					exists = false;
+				}
+			} else if (optRegister.equals("6")){
+				if (Input.find(directory, db, num)) {
+					System.out.println("Falta la opcion de modificar");
+					// Modify.modify(directory, db, column, opt, num);  ----> Nelson
+					/* el metodo debe recibir los argumentos de la siguiente manera:
+					String directory, String db, ArrayList<String> column, ArrayList<String> opt, long num*/
+					// Delete.delete(directory, db, column, opt, num); ----> Brandon
+					/* el metodo debe recibir los argumentos de la siguiente manera:
+					String directory, String db, ArrayList<String> column, ArrayList<String> opt, long num*/
+					exists = true;
+				} else {
+					exists = false;
+				}
+			} else {
+				if (Input.find(directory, db, num)) {
+					System.out.println("Falta la opcion de eliminar");
+					exists = true;
+				} else {
+					exists = false;
+				}
+			}
+    	}
+    	return exists;
     }
 }
