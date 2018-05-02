@@ -73,7 +73,9 @@ public class FirstStepsDB {
 		} else if (file.isDirectory()){
 			File[] listOfFiles = file.listFiles();
 			for (File t: listOfFiles) {
-				System.out.println(String.valueOf(t).substring(10));
+				if (String.valueOf(t).substring(10).charAt(0) != '.') {
+					System.out.println(String.valueOf(t).substring(10));
+				}
 			}
 			if (listOfFiles.length == 0) {
 				return false;
@@ -111,7 +113,7 @@ public class FirstStepsDB {
 		if(check) {
 			String db = directory; 
 			db += sc.nextLine();
-			//db += "prueba01#";
+			//db += "temp";
 			file = new File(db);
 			if(file.exists()) {
 				dataBase = db;
@@ -145,6 +147,4 @@ public class FirstStepsDB {
 			return false;
 		}
 	}
-	
-	
 }
