@@ -1,5 +1,3 @@
-//package project2;
-
 import java.io.EOFException;
 //import java.io.EOFException;
 import java.io.File;
@@ -8,6 +6,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;;
 
+/* Este metodo es para insertar datos a la db por medio de los tipo de datos solicitados y tambien es para describir que tipo de datos almacena cada columna */
 public class Input {
 	public static void call(String directory, String db, String opt) {
 		File index1 = new File(directory+"."+db.substring(10));
@@ -27,7 +26,7 @@ public class Input {
 	    		guide.seek(0);
 	    		raf.seek(raf.length());
     			if (opt.equals("3")) {
-    				System.out.println("****");
+    				System.out.println("*******************************");
 	    			raf.writeBoolean(true);
 	    			scored += 1;
     			}
@@ -36,6 +35,7 @@ public class Input {
 	    			column = guide.readUTF();
 	    			//System.out.println(type + " % " + column);
 	    			switch(type) {
+	    			// Solicita booleano
 	    			case 1:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "boolean");
@@ -62,13 +62,9 @@ public class Input {
 	    					} while(repeat);
 	    					scored += 1;
 	    					raf.writeBoolean(inBoolean);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readBoolean());
-	    				}*/
+	    				} 
 	    				break;
+	    			// Solicita char
 	    			case 2:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "char");
@@ -90,13 +86,9 @@ public class Input {
 	    					}  while(repeat);
 	    					scored += 2;
 	    					raf.writeChar(inChar);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readChar());
-	    				}*/
+	    				}
 	    				break;
+	    			// String maximo de 50 caracteres, si es menos de 50 concatena espacios si es mas de 50 vuelve a solicitar
 	    			case 3:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "String");
@@ -112,13 +104,9 @@ public class Input {
 	    					}
 	    					scored += 52;
 	    					raf.writeUTF(inString);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				}/* else if (opt.equals("4")) {
-	    					System.out.println(raf.readUTF());
-	    				}*/
+	    				}
 	    				break;
+	    			// solicita byte
 	    			case 4:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "byte");
@@ -138,13 +126,9 @@ public class Input {
 	    					} while(repeat);
 	    					scored += 1;
 	    					raf.writeByte(inByte);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readByte());
-	    				}*/
+	    				}
 	    				break;
+	    			// solicta short
 	    			case 5:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "short");
@@ -164,13 +148,9 @@ public class Input {
 	    					} while(repeat);
 	    					scored += 2;
 	    					raf.writeShort(inShort);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readShort());
-	    				}*/
+	    				}
 	    				break;
+	    			// soliicta int
 	    			case 6:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "int");
@@ -190,13 +170,9 @@ public class Input {
 	    					} while (repeat);
 	    					scored += 4;
 	    					raf.writeInt(inInt);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readInt());
-	    				}*/
+	    				}
 	    				break;
+	    			// solicita long
 	    			case 7:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "long");
@@ -216,13 +192,9 @@ public class Input {
 	    					} while (repeat);
 	    					scored += 8;
 	    					raf.writeLong(inLong);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readLong());
-	    				}*/
+	    				}
 	    				break;
+	    			// solicita float
 	    			case 8:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "float");
@@ -242,13 +214,9 @@ public class Input {
 	    					} while (repeat);
 	    					scored += 4;
 	    					raf.writeFloat(inFloat);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readFloat());
-	    				}*/
+	    				}
 	    				break;
+	    			// solicita double
 	    			case 9:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "double");
@@ -268,12 +236,7 @@ public class Input {
 	    					} while (repeat);
 	    					scored += 8;
 	    					raf.writeDouble(inDouble);
-	    					//System.out.println(raf.getFilePointer());
-	    			    	//System.out.println(scored);
-	    			    	//index2.writeInt(scored);
-	    				} /*else if (opt.equals("4")) {
-	    					System.out.println(raf.readDouble());
-	    				}*/
+	    				}
 	    				break;
 	    			}
 	    		}
@@ -281,8 +244,12 @@ public class Input {
 	    	} catch (IOException e) {
 	    		System.out.println(e.getMessage());
 	    	} System.out.println("\n\n");
-	    	System.out.println(scored);
+	    	//System.out.println(scored);
 	    	try {
+	    		/*
+	    		 *  Esta parte es la que calcula la cantidad de byte que ocupa cada registro y crea un archivo llamado "." + "nombre db" + "_index"
+	    		 *   donde almacena esta cantidad
+	    		 * */
 	    		RandomAccessFile index2 = new RandomAccessFile(directory+"."+db.substring(10) + "_index", "rw");
 	    		index2.seek(0);
 	    		index2.writeInt(scored);
@@ -294,20 +261,22 @@ public class Input {
 		}
     }
     
-public static int spot (String directory, String db) {
-	File index1 = new File(directory+"."+db.substring(10)+"_index");
-	int num = 0;
-	try {  
-		RandomAccessFile raf = new RandomAccessFile(index1, "r");
-		raf.seek(0);
-		num = raf.readInt();
-		raf.close();
-	} catch (IOException e) {
-		System.out.println("Es necesario primero estructurar el archivo y luego insertar registros para poder utilizar esta opcion\n\n");
+	// Esta funcion retorna la cantidad de byte que ocupa cada registro
+	public static int spot (String directory, String db) {
+		File index1 = new File(directory+"."+db.substring(10)+"_index");
+		int num = 0;
+		try {  
+			RandomAccessFile raf = new RandomAccessFile(index1, "r");
+			raf.seek(0);
+			num = raf.readInt();
+			raf.close();
+		} catch (IOException e) {
+			System.out.println("Es necesario primero estructurar el archivo y luego insertar registros para poder utilizar esta opcion\n\n");
+		}
+		return num;
 	}
-	return num;
-}
 	
+	// Aqui se listan todos los registros almacenados en la db
     public static void show(String directory, String db) {
     	File index1 = new File(directory+"."+db.substring(10));
 		if (index1.exists()) {
@@ -333,10 +302,10 @@ public static int spot (String directory, String db) {
 	    		int cont =0;
 	    		while(true) {
 	    			raf.readBoolean();
-	    			///// aqui puedo agregar un boolean
 	    			cont++;
-	    			System.out.println("*CORRELATIVO* " + cont);
+	    			System.out.println("*CORRELATIVO*:  " + cont);
 	    			for(byte i = 0; i < index.size(); i++) {
+	    				// segun el tipo de dato que selecciono el usuario asi se leen los registros
 	    				switch(index.get(i)) {
 	    				case "1":
 	    					System.out.println(opt.get(i) + ": " + raf.readBoolean());
@@ -378,75 +347,76 @@ public static int spot (String directory, String db) {
 		}
     }
 		
-		public static boolean find(String directory, String db, long num) {
-	    	File index1 = new File(directory+"."+db.substring(10));
-			File current = new File(db);
-			RandomAccessFile guide = null;
-			RandomAccessFile raf = null;
-			ArrayList<String> index = new ArrayList<String>();
-			ArrayList<String> opt = new ArrayList<String>();
-			boolean exists = false;
-			try {
-				guide = new RandomAccessFile(index1, "r");
-				guide.seek(0);
-				while(true) {
-					index.add(String.valueOf(guide.readByte()));
-					opt.add(guide.readUTF());
-				} 
-			} catch (EOFException e) {
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-			}
-			try {
-				raf = new RandomAccessFile(current, "r");
-				System.out.println(num + "---" + raf.length());
-				if (num < raf.length()) {
-				    raf.seek(num);
-				    int cont =0;
-				    raf.readBoolean();
-				    cont++;
-				    System.out.println("*CORRELATIVO* " + cont);
-				    for(byte i = 0; i < index.size(); i++) {
-				    	switch(index.get(i)) {
-				    	case "1":
-				    		System.out.println(opt.get(i) + ": " + raf.readBoolean());
-				    		break;
-				    	case "2":
-				    		System.out.println(opt.get(i) + ": " + raf.readChar());
-				    		break;
-				    	case "3":
-				    		System.out.println(opt.get(i) + ": " + raf.readUTF());
-				    		break;
-				    	case "4":
-				    		System.out.println(opt.get(i) + ": " + raf.readByte());
-				    		break;
-				    	case "5":
-				    		System.out.println(opt.get(i) + ": " + raf.readShort());
-				    		break;
-				    	case "6":
-				    		System.out.println(opt.get(i) + ": " + raf.readInt());
-				    		break;
-				    	case "7":
-				    		System.out.println(opt.get(i) + ": " + raf.readLong());
-				    		break;
-				    	case "8":
-				    		System.out.println(opt.get(i) + ": " + raf.readFloat());
-				    		break;
-				    	case "9":
-				    		System.out.println(opt.get(i) + ": " + raf.readDouble());
-				    		break;
-				    	}
-				    }
-				    exists = true;
-				} else {
-					System.out.println("El numero de CORRELATIVO ingresado no existe");
-					exists = false;
-				}
-				System.out.println();
-			} catch (EOFException e) {
-			} catch (IOException e) {
-			   	System.out.println(e.getMessage());
-			}
-			return exists;
+    /* Este metodo busca los registros segun el numero de correlativo */
+    public static boolean find(String directory, String db, long num) {
+    	File index1 = new File(directory+"."+db.substring(10));
+		File current = new File(db);
+		RandomAccessFile guide = null;
+		RandomAccessFile raf = null;
+		ArrayList<String> index = new ArrayList<String>();
+		ArrayList<String> opt = new ArrayList<String>();
+		boolean exists = false;
+		try {
+			guide = new RandomAccessFile(index1, "r");
+			guide.seek(0);
+			while(true) {
+				index.add(String.valueOf(guide.readByte()));
+				opt.add(guide.readUTF());
+			} 
+		} catch (EOFException e) {
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
-}
+		try {
+			raf = new RandomAccessFile(current, "r");
+			//System.out.println(num + "---" + raf.length());
+			if (num < raf.length()) {
+			    raf.seek(num);
+			    //int cont =0;
+			    raf.readBoolean();
+			    //cont++;
+			    //System.out.println("*CORRELATIVO* " + cont);
+			    for(byte i = 0; i < index.size(); i++) {
+			    	//System.out.println("***"+raf.getFilePointer()+"***");
+			    	switch(index.get(i)) {
+			    	case "1":
+			    		System.out.println(opt.get(i) + ": " + raf.readBoolean());
+			    		break;
+			    	case "2":
+			    		System.out.println(opt.get(i) + ": " + raf.readChar());
+			    		break;
+			    	case "3":
+			    		System.out.println(opt.get(i) + ": " + raf.readUTF());
+			    		break;
+			    	case "4":
+			    		System.out.println(opt.get(i) + ": " + raf.readByte());
+			    		break;
+			    	case "5":
+			    		System.out.println(opt.get(i) + ": " + raf.readShort());
+			    		break;
+			    	case "6":
+			    		System.out.println(opt.get(i) + ": " + raf.readInt());
+			    		break;
+			    	case "7":
+			    		System.out.println(opt.get(i) + ": " + raf.readLong());
+			    		break;
+			    	case "8":
+			    		System.out.println(opt.get(i) + ": " + raf.readFloat());
+			    		break;
+			    	case "9":
+			    		System.out.println(opt.get(i) + ": " + raf.readDouble());
+			    		break;
+			    	}
+			    }
+			    exists = true;
+			} else {
+				System.out.println("El numero de CORRELATIVO ingresado no existe");
+				exists = false;
+			}
+			System.out.println();
+		} catch (EOFException e) {
+		} catch (IOException e) {
+		   	System.out.println(e.getMessage());
+		}
+		return exists;
+	}
