@@ -1,5 +1,3 @@
-//package project2;
-
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -7,12 +5,14 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**/
 public class Registers {
 	static File file = null;
 	static Scanner sc = new Scanner(System.in);
 	static ArrayList<String> dataType = new ArrayList<String>();
 	static ArrayList<String> column = new ArrayList<String>();
 	
+	/* Aqui se muestra lo que el usuario puede realizad con la db para llamar al respectivo metodo*/
     public static boolean subMenu(String db, String directory) {
     	boolean ex = false;
     	System.out.println("\t1 - Estructurar Base de Datos");
@@ -66,8 +66,9 @@ public class Registers {
 	    	return true;
     }
     
+    /* Aqui se solicita los tipos de datos que el usuario necesita para crear las respectivas columnas de la db a estructurar */
     public static boolean estruct(String db, String directory) {
-    	System.out.println(db.substring(10));
+    	//System.out.println(db.substring(10));
     	String temp;
     	//file = new File(db);
     	do {
@@ -143,6 +144,7 @@ public class Registers {
     	return false;
     }
     
+    /* Aqui se genera un archivo llamado "." + "nombre db" donde se almacena el nombre de las columnas y el tipo de dato que almacenara cada columna */
     public static void index(ArrayList<String> column, ArrayList<String> dataType, String directory, String db) {
     	File index1 = new File(directory+"."+db.substring(10));
     	RandomAccessFile raf = null;
@@ -159,6 +161,8 @@ public class Registers {
 		}
     }
     
+    /* Aqui se mide el tamano de la db respecto al tamano que ocupa cada registro para poder calcular si es posible utilizar las opciones de 
+     * buscar, modificar y eliminar*/
     public static boolean value(String directory, String db, String optRegister) {
     	int find = 0;
     	boolean control = true;
@@ -173,7 +177,7 @@ public class Registers {
 	    			if (find >= 0) {
 	    				control = false;
 	    			} else {
-	    				System.out.println("El numero ingresado no es valido*\n");
+	    				System.out.println("El numero ingresado no es valido\n");
 	    			}
 	    		} catch(Exception e) {
 	    			System.out.println("El numero ingresado no es valido**\n");
@@ -191,13 +195,30 @@ public class Registers {
 			    		guide = new RandomAccessFile(index1, "r");
 			    		guide.seek(0);
 			    		while(true) {
-			    			column.add(String.valueOf(guide.readByte()));
-			    			opt.add(guide.readUTF());
+			    			opt.add(String.valueOf(guide.readByte()));
+			    			//System.out.println(guide.readByte());
+			    			column.add(guide.readUTF());
+			    			//System.out.println(guide.readUTF());
 			    		}
 			    	} catch (EOFException e) {
 			    	} catch (IOException e) {
 			    		System.out.println(e.getMessage());
 			    	}
+					if (optRegister.equals("6")){
+						if (Input.find(directory, db, num)) {
+							Modify.modify(directory, db, column, opt, num);
+							exists = true;
+						} else {
+							exists = false;
+						}
+					} else {
+						if (Input.find(directory, db, num)) {
+							Delete.delete(directory, db, column, opt, num);
+							exists = true;
+						} else {
+							exists = false;
+						}
+					}
 				}
 			}
 			if (optRegister.equals("5")) {
@@ -206,27 +227,7 @@ public class Registers {
 				} else {
 					exists = false;
 				}
-			} else if (optRegister.equals("6")){
-				if (Input.find(directory, db, num)) {
-					System.out.println("Falta la opcion de modificar");
-					// Modify.modify(directory, db, column, opt, num);  ----> Nelson
-					/* el metodo debe recibir los argumentos de la siguiente manera:
-					String directory, String db, ArrayList<String> column, ArrayList<String> opt, long num*/
-					// Delete.delete(directory, db, column, opt, num); ----> Brandon
-					/* el metodo debe recibir los argumentos de la siguiente manera:
-					String directory, String db, ArrayList<String> column, ArrayList<String> opt, long num*/
-					exists = true;
-				} else {
-					exists = false;
-				}
-			} else {
-				if (Input.find(directory, db, num)) {
-					System.out.println("Falta la opcion de eliminar");
-					exists = true;
-				} else {
-					exists = false;
-				}
-			}
+			} 
     	}
     	return exists;
     }
