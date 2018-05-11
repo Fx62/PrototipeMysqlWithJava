@@ -2,6 +2,10 @@
 /*
 *  Luis Fernando Ortega Rodríguez
 *       - 7690-17-360
+*  Nelson Steven Cifuentes Chilin 
+*       - 7690-17-2711
+*  Brandon Stewart Diaz
+*       - 7690-14-307
 */
 
 Este proyecto consiste en poder manejar archivos de texto como si fuera una base de datos.
