@@ -100,3 +100,4 @@ public class Delete {
 			System.out.println("El registro ha sido borrado exitosamente");
 		}
 	}
+}
