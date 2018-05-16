@@ -25,6 +25,8 @@ public class Delete {
 					rafTemp.writeBoolean(raf.readBoolean());
 					for (int i = 0; i < dataType.size(); i++) {
 						switch(dataType.get(i)) {
+					    case "0":
+					    	break;
 	    				case "1":
 	    					rafTemp.writeBoolean(raf.readBoolean());
 	    					break;
@@ -59,6 +61,8 @@ public class Delete {
 					rafDeleted.writeBoolean(raf.readBoolean());
 					for (int i = 0; i < dataType.size(); i++) {
 						switch(dataType.get(i)) {
+					    case "0":
+					    	break;
 	    				case "1":
 	    					rafDeleted.writeBoolean(raf.readBoolean());
 	    					break;

@@ -19,6 +19,8 @@ public class Modify {
 			for (int i = 0; i < dataType.size(); i++) {
 				//System.out.println("+++" + raf.getFilePointer() + "+++");
     			switch(dataType.get(i)) {
+    		    case "0":
+    		    	break;
     			case "1":
     				repeat = false;
     				boolean inBoolean;

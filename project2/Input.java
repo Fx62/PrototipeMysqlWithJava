@@ -36,6 +36,83 @@ public class Input {
 	    			//System.out.println(type + " % " + column);
 	    			switch(type) {
 	    			// Solicita booleano
+	    		    case 0:
+	    		    	if (opt.equals("2")) {
+	    					System.out.println(column + " - " + "Date");
+	    				} else if (opt.equals("3")) {
+	    					boolean leap = false;
+	    					repeat = true;
+	    					String inDate;
+	    					int year = 0, month = 0, day = 0;
+	    					do {
+	    						System.out.print("Año: ");
+	    						temp = sc.nextLine();
+	    						try {
+	    							int yb = 0;
+	    							year = Integer.parseInt(temp);
+	    							if ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))) {
+	    								leap = true;
+	    							} else {
+	    								leap = false;
+	    							}
+	    							repeat = false;
+	    						} catch(Exception e) {
+	    						}
+	    					} while (repeat);
+	    					repeat = true;
+	    					do {
+	    						System.out.print("Mes: ");
+	    						temp = sc.nextLine();
+	    						try {
+	    							month = Integer.parseInt(temp);
+	    							if (!(month > 0 && month < 13)) {
+	    								System.out.println("El mes ingresado no es valido");
+	    							} else {
+		    							repeat = false;	
+	    							}
+	    						} catch(Exception e) {
+	    						}
+	    					} while (repeat);
+	    					repeat = true;
+	    					do {
+	    						System.out.print("Dia: ");
+	    						temp = sc.nextLine();
+	    						try {
+	    							day = Integer.parseInt(temp);
+	    							if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+	    								if (day < 1 || day > 31) {
+	    									System.out.println("El dia ingresado no es valido");
+	    								} else {
+	    	    							repeat = false;
+	    								}
+	    							} else if (month == 2){
+	    								if (leap) {
+	    									if (day < 1 || day > 29) {
+		    									System.out.println("El dia ingresado no es valido");
+		    								} else {
+		    	    							repeat = false;
+		    								}
+	    								} else {
+	    									if (day < 1 || day > 28) {
+		    									System.out.println("El dia ingresado no es valido");
+		    								} else {
+		    	    							repeat = false;
+		    								}
+	    								}
+	    							} else {
+	    								if (day < 1 || day > 30) {
+	    									System.out.println("El dia ingresado no es valido");
+	    								} else {
+	    	    							repeat = false;
+	    								}
+	    							}
+	    						} catch(Exception e) {
+	    						}
+	    					} while (repeat);
+	    					//Date date = new GregorianCalendar(year, month, day).getTime();
+	    					System.out.println(day + "/" + month + "/" + year);
+	    				}
+	    		    	break;
 	    			case 1:
 	    				if (opt.equals("2")) {
 	    					System.out.println(column + " - " + "boolean");
@@ -307,6 +384,8 @@ public class Input {
 	    			for(byte i = 0; i < index.size(); i++) {
 	    				// segun el tipo de dato que selecciono el usuario asi se leen los registros
 	    				switch(index.get(i)) {
+	    			    case "0":
+	    			    	break;
 	    				case "1":
 	    					System.out.println(opt.get(i) + ": " + raf.readBoolean());
 	    					break;
@@ -379,6 +458,8 @@ public class Input {
 			    for(byte i = 0; i < index.size(); i++) {
 			    	//System.out.println("***"+raf.getFilePointer()+"***");
 			    	switch(index.get(i)) {
+				    case "0":
+				    	break;
 			    	case "1":
 			    		System.out.println(opt.get(i) + ": " + raf.readBoolean());
 			    		break;

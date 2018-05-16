@@ -26,6 +26,8 @@ public class Registers {
     	String optRegisters = sc.nextLine();
     	//String optRegisters = "4";
 	    switch (optRegisters) {
+	    case "0":
+	    	break;
 	    case "1":
 	    	file = new File(db);
 	    	if (file.length() == 0) {
@@ -82,6 +84,7 @@ public class Registers {
     		}
     	} while(temp.equals("*CORRELATIVO*"));
     	System.out.println("=== TIPOS DE DATOS ===");
+    	System.out.println("0 - Date");
 		System.out.println("1 - boolean");
 		System.out.println("2 - char");
 		System.out.println("3 - String");
@@ -93,6 +96,9 @@ public class Registers {
 		System.out.println("9 - double");
 		String type = sc.nextLine();
 		switch(type) {
+	    case "0":
+	    	dataType.add("0");
+	    	break;
 		case "1":
 			dataType.add("1");
 			break;
