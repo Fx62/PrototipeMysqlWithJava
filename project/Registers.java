@@ -11,10 +11,10 @@ public class Registers {
 	static Scanner sc = new Scanner(System.in);
 	static ArrayList<String> dataType = new ArrayList<String>();
 	static ArrayList<String> column = new ArrayList<String>();
+	static ArrayList<Integer> size = new ArrayList<Integer>();
 	
 	/* Aqui se muestra lo que el usuario puede realizad con la db para llamar al respectivo metodo*/
     public static boolean subMenu(String db, String directory) {
-    	boolean ex = false;
     	System.out.println("\t1 - Estructurar Base de Datos");
     	System.out.println("\t2 - Describir Base de Datos");
     	System.out.println("\t3 - Insertar registros a Base de Datos");
@@ -26,8 +26,6 @@ public class Registers {
     	String optRegisters = sc.nextLine();
     	//String optRegisters = "4";
 	    switch (optRegisters) {
-	    case "0":
-	    	break;
 	    case "1":
 	    	file = new File(db);
 	    	if (file.length() == 0) {
@@ -72,9 +70,10 @@ public class Registers {
     public static boolean estruct(String db, String directory) {
     	//System.out.println(db.substring(10));
     	String temp;
+    	boolean repeat = true;
     	//file = new File(db);
     	do {
-    		System.out.print("Nombre de columna: ");
+    		System.out.print("\n\nNombre de columna: ");
     		temp = sc.nextLine();
     		if (temp.equals("*CORRELATIVO*")) {
     			System.out.println("El nombre de columna no puede ser utilizado, ya que el nombre:\n"
@@ -97,15 +96,44 @@ public class Registers {
 		String type = sc.nextLine();
 		switch(type) {
 	    case "0":
-	    	dataType.add("0");
+	    	String style;
+			repeat = true;
+			do {
+				System.out.println("\n1 - DD/MM/YY");
+				System.out.println("2 - DD/MM/YYYY");
+				style = sc.nextLine();
+				if(style.equals("1") || style.equals("2"))
+					repeat = false;
+				else {
+					System.out.println("La opcion ingresada no es valida\n");
+				}
+			} while (repeat);
+	    	if (style.equals("1")) {
+	    		dataType.add("a");
+	    		size.add(8);
+	    	} else {
+	    		dataType.add("b");
+	    		size.add(10);
+	    	}
 	    	break;
 		case "1":
 			dataType.add("1");
+			size.add(1);
 			break;
 		case "2":
 			dataType.add("2");
+			size.add(1);
 			break;
 		case "3":
+			repeat = true;
+			do {
+				temp = sc.nextLine();
+				try {
+					
+				} catch(Exception e) {
+					System.out.println("El valor ingresado no es valido");
+				}
+			} while(repeat);
 			dataType.add("3");
 			break;
 		case "4":
@@ -159,7 +187,7 @@ public class Registers {
 			raf.seek(0);
 			for (short i = 0; i < column.size(); i++) {
 				//System.out.println(dataType.get(i) + " " + column.get(i));
-    			raf.writeByte(Byte.parseByte(dataType.get(i)));
+    			raf.writeUTF(dataType.get(i));
     			raf.writeUTF(column.get(i));
     		} raf.close();
     	} catch (IOException e) {
@@ -189,7 +217,7 @@ public class Registers {
 	    			System.out.println("El numero ingresado no es valido**\n");
 	    		}
 	    	} while(control);
-			int num = Input.spot(directory, db);
+			long num = Input.spot(directory, db);
 			num *= (find);
 			if(!optRegister.equals("5")) {
 				File index1 = new File(directory+"."+db.substring(10));
@@ -201,7 +229,7 @@ public class Registers {
 			    		guide = new RandomAccessFile(index1, "r");
 			    		guide.seek(0);
 			    		while(true) {
-			    			opt.add(String.valueOf(guide.readByte()));
+			    			opt.add(guide.readUTF());
 			    			//System.out.println(guide.readByte());
 			    			column.add(guide.readUTF());
 			    			//System.out.println(guide.readUTF());
@@ -234,6 +262,8 @@ public class Registers {
 					exists = false;
 				}
 			} 
+    	} else {
+    		System.out.println("...");
     	}
     	return exists;
     }
