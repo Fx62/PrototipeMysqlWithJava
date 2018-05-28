@@ -1,3 +1,4 @@
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -7,19 +8,47 @@ import java.util.Scanner;
 /* Este metodo abre el archivo en la cantidad de byte segun el numero de correlativo que ingresa el usuario, solicita todos los campos pero si el
  * usuario unicamente presiona enter, el campo no es modificado */
 public class Modify {
-	public static void modify(String directory, String db, ArrayList<String> column, ArrayList<String> dataType, int num) {
+
+	static Scanner sc = new Scanner(System.in);
+	
+	public static void modify(String directory, String db, ArrayList<String> column, ArrayList<String> dataType, long num) {
 		File current = new File(db);
 		try {
 			boolean repeat;
-			String temp;
-			Scanner sc = new Scanner(System.in);
+			String temp, dateTemp, newDate;
+			long start;
+			String[] actualDate = new String[3];
 			RandomAccessFile raf = new RandomAccessFile(current, "rw");
 			raf.seek(num);
 			raf.readBoolean();
 			for (int i = 0; i < dataType.size(); i++) {
-				//System.out.println("+++" + raf.getFilePointer() + "+++");
+				System.out.println(dataType.get(i));
     			switch(dataType.get(i)) {
-    		    case "0":
+    		    case "a":
+    		    	start = raf.getFilePointer();
+    		    	//System.out.println(start + "*");
+    		    	dateTemp = raf.readUTF();
+    		    	actualDate = dateTemp.split("/");
+    		    	newDate = validateDate("1", actualDate);
+    		    	while(newDate.length() != 8) {
+						newDate += " ";
+    		    	}
+    		    	raf.seek(start);
+    		    	raf.writeUTF(newDate);
+    		    	//System.out.println(raf.getFilePointer()+"*");
+    		    	break;
+    		    case "b":
+    		    	start = raf.getFilePointer();
+    		    	//System.out.println(start + "*");
+    		    	dateTemp = raf.readUTF();
+    		    	actualDate = dateTemp.split("/");
+    		    	newDate = validateDate("2", actualDate);
+    		    	while(newDate.length() != 10) {
+						newDate += " ";
+    		    	}
+    		    	raf.seek(start);
+    		    	raf.writeUTF(newDate);
+    		    	//System.out.println(raf.getFilePointer()+"*");
     		    	break;
     			case "1":
     				repeat = false;
@@ -205,8 +234,132 @@ public class Modify {
 
 				}
     		}
-		} catch(IOException e) {
+		} catch(EOFException e) {
+		}
+		catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	public static String validateDate(String style, String[] actualDate) {
+		boolean leap = false;
+		boolean repeat = true;
+		byte exit = 0;
+		String temp;
+		int year = 0;
+		byte month = 0, day = 0;
+		System.out.print((style.equals("1") ? "Ingrese año en formato [YY]" : "Ingrese año en formato [YYYY]") + 
+				" o presionar enter en caso de no querer modificar este campo ");
+		temp = sc.nextLine();
+		if (temp.length() == 0) {
+			year = Integer.parseInt(actualDate[2]);
+			repeat = false;
+		} else {
+			exit = 1;
+		}
+		while (repeat) {
+			if (exit != 1) {
+				System.out.print(style.equals("1") ? "\nIngrese año en formato [YY] " : "\nIngrese año en formato [YYYY] ");
+				temp = sc.nextLine();
+			}
+			exit = 0;
+			try {
+				year = Integer.parseInt(temp);
+				if (style.equals("1") && temp.length() == 2) {
+					if ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))) {
+						leap = true;
+					} else {
+						leap = false;
+					}
+					repeat = false;
+				} else if (style.equals("2") && temp.length() == 4) {
+					if ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))) {
+						leap = true;
+					} else {
+						leap = false;
+					}
+					repeat = false;
+				} else {
+					System.out.println("El año ingresado no es valido segun el formato establecido");
+				}
+			} catch(Exception e) {
+				System.out.println("El año ingresado no es correcto");
+			}
+		}
+		repeat = true;
+		System.out.print("\nIngrese mes o presionar enter en caso de no querer modificar este campo ");
+		temp = sc.nextLine();
+		if (temp.length() == 0) {
+			month = Byte.parseByte(actualDate[1]);
+			repeat = false;
+		} else {
+			exit = 1;
+		}
+		while(repeat) {
+			if (exit != 1) {
+				System.out.print("\nIngrese mes ");
+				temp = sc.nextLine();
+			}
+			exit = 0;
+			try {
+				month = Byte.parseByte(temp);
+				if (!(month > 0 && month < 13)) {
+					System.out.println("El mes ingresado no es valido");
+				} else {
+					repeat = false;	
+				}
+			} catch(Exception e) {
+				System.out.println("El mes ingresado no es correcto");
+			}
+		}
+		repeat = true;
+		System.out.print("\nIngrese dia o presionar enter en caso de no querer modificar este campo ");
+		temp = sc.nextLine();
+		if (temp.length() == 0) {
+			day = Byte.parseByte(actualDate[0]);
+			repeat = false;
+		} else {
+			exit = 1;
+		}
+		while(repeat) {
+			if (exit != 1) {
+				System.out.print("\nIngrese dia ");
+				temp = sc.nextLine();
+			}
+			exit = 0;
+			try {
+				day = Byte.parseByte(temp);
+				if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+					if (day < 1 || day > 31) {
+						System.out.println("El dia ingresado no es valido");
+					} else {
+						repeat = false;
+					}
+				} else if (month == 2){
+					if (leap) {
+						if (day < 1 || day > 29) {
+							System.out.println("El dia ingresado no es valido");
+						} else {
+							repeat = false;
+						}
+					} else {
+						if (day < 1 || day > 28) {
+							System.out.println("El dia ingresado no es valido");
+						} else {
+							repeat = false;
+						}
+					}
+				} else {
+					if (day < 1 || day > 30) {
+						System.out.println("El dia ingresado no es valido");
+					} else {
+						repeat = false;
+					}
+				}
+			} catch(Exception e) {
+				System.out.println("El dia ingresado no es correcto");
+			}
+		}
+		return (day + "/" + month + "/" + year);
 	}
 }
