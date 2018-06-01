@@ -71,6 +71,7 @@ public class Registers {
     	//System.out.println(db.substring(10));
     	String temp;
     	boolean repeat = true;
+    	int sizeTemp = 0;
     	//file = new File(db);
     	do {
     		System.out.print("\n\nNombre de columna: ");
@@ -127,32 +128,49 @@ public class Registers {
 		case "3":
 			repeat = true;
 			do {
+				System.out.print("\nIngrese la cantidad de caracteres que pueden ser utilizados: ");
 				temp = sc.nextLine();
-				try {
-					
-				} catch(Exception e) {
-					System.out.println("El valor ingresado no es valido");
+				if (temp.length() > 0 && temp.length() < 11) {
+					try {
+						sizeTemp = Integer.parseInt(temp);
+						if (sizeTemp > 0) {
+							repeat = false;
+						} else {
+							System.out.println("El tamaño ingresado no es valido");
+						}
+					} catch(Exception e) {
+						System.out.println("El valor ingresado no es valido");
+					}
+				} else {
+					System.out.println("El tamaño ingresado no es valido");
 				}
 			} while(repeat);
 			dataType.add("3");
+			size.add(sizeTemp);
 			break;
 		case "4":
 			dataType.add("4");
+			size.add(validateSizeNumbers(4));
 			break;
 		case "5":
 			dataType.add("5");
+			size.add(validateSizeNumbers(6));
 			break;
 		case "6":
 			dataType.add("6");
+			size.add(validateSizeNumbers(11));
 			break;
 		case "7":
 			dataType.add("7");
+			size.add(validateSizeNumbers(20));
 			break;
 		case "8":
 			dataType.add("8");
+			size.add(validateSizeNumbers(11));
 			break;
 		case "9":
 			dataType.add("9");
+			size.add(validateSizeNumbers(20));
 			break;
 		default:
 			System.out.println("El valor ingesado no es valido");
@@ -165,21 +183,46 @@ public class Registers {
     		if(exit.equalsIgnoreCase("y"))
     			return true;
     		else if(exit.equalsIgnoreCase("n")) {
-    			index(column, dataType, directory, db);
-    			//****
-    			//
-    			//***
+    			index(column, dataType, size, directory, db);
     			return false;
     		}
     		else
-    			System.out.println("El valor ingresado no es valido");
+    			System.out.println("\nEl valor ingresado no es valido");
     	} while(!exit.equalsIgnoreCase("y") && !exit.equalsIgnoreCase("n"));
 		
     	return false;
     }
     
+    public static int validateSizeNumbers(int size) {
+    	boolean repeat = true;
+    	String temp;
+    	int sizeTemp = 0;
+		do {
+			System.out.println("\nIngrese la cantidad de caracteres que pueden ser utilizados: ");
+			temp = sc.nextLine();
+			if (temp.length() > 0 && temp.length() < 11) {
+				try {
+					sizeTemp = Integer.parseInt(temp);
+					if(sizeTemp > 0 && sizeTemp < size) {
+						repeat = false;
+					} else {
+						System.out.println("El valor ingresado no es valido para el tipo de dato seleccionado");
+					}
+				} catch(Exception e) {
+					System.out.println("El valor ingresado no es valido");
+				}
+			} else {
+				System.out.println("El tamaño ingresado no es valido");
+			}
+		} while(repeat);
+		return sizeTemp;
+    }
+    
     /* Aqui se genera un archivo llamado "." + "nombre db" donde se almacena el nombre de las columnas y el tipo de dato que almacenara cada columna */
-    public static void index(ArrayList<String> column, ArrayList<String> dataType, String directory, String db) {
+    public static void index(ArrayList<String> column, ArrayList<String> dataType, ArrayList<Integer> size, String directory, String db) {
+    	for (int t: size) {
+    		System.out.println(t);
+    	}
     	File index1 = new File(directory+"."+db.substring(10));
     	RandomAccessFile raf = null;
     	try {
@@ -189,6 +232,7 @@ public class Registers {
 				//System.out.println(dataType.get(i) + " " + column.get(i));
     			raf.writeUTF(dataType.get(i));
     			raf.writeUTF(column.get(i));
+    			raf.writeInt(size.get(i));
     		} raf.close();
     	} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -225,14 +269,16 @@ public class Registers {
 			    	RandomAccessFile guide = null;
 			    	ArrayList<String> column = new ArrayList<String>();
 			    	ArrayList<String> opt = new ArrayList<String>();
+			    	ArrayList<Integer> size = new ArrayList<Integer>();
 			    	try {
 			    		guide = new RandomAccessFile(index1, "r");
 			    		guide.seek(0);
 			    		while(true) {
 			    			opt.add(guide.readUTF());
-			    			//System.out.println(guide.readByte());
+			    			//System.out.println(guide.readUTF());
 			    			column.add(guide.readUTF());
 			    			//System.out.println(guide.readUTF());
+			    			size.add(guide.readInt());
 			    		}
 			    	} catch (EOFException e) {
 			    	} catch (IOException e) {
@@ -240,14 +286,14 @@ public class Registers {
 			    	}
 					if (optRegister.equals("6")){
 						if (Input.find(directory, db, num)) {
-							Modify.modify(directory, db, column, opt, num);
+							Modify.modify(directory, db, column, opt, size, num);
 							exists = true;
 						} else {
 							exists = false;
 						}
 					} else {
 						if (Input.find(directory, db, num)) {
-							Delete.delete(directory, db, column, opt, num);
+							Delete.delete(directory, db, column, opt, size, num);
 							exists = true;
 						} else {
 							exists = false;
