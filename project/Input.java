@@ -24,6 +24,7 @@ public class Input {
 	    		raf = new RandomAccessFile(current, "rw");
 	    		String type;
 	    		String column;
+	    		int size;
 	    		String temp;
 	    		boolean repeat;
 	    		guide.seek(0);
@@ -40,16 +41,17 @@ public class Input {
 			while(true) {
     			type =guide.readUTF();
     			column = guide.readUTF();
+    			size = guide.readInt();
     			//System.out.println(type + " % " + column);
     			switch(type) {
     			// Solicita booleano
     		    case "a":
     		    	if (opt.equals("2")) {
-    					System.out.println(column + " - " + "Date YY/MM/DD");
+    					System.out.println(column + " - " + "Date DD/MM/YY" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					System.out.println("\n" + column + ": ");
 						String inDate = validateDate("1");
-    					while(inDate.length() != 8) {
+    					while(inDate.length() != size) {
 								inDate += " ";
 						}
     					raf.writeUTF(inDate);
@@ -58,11 +60,11 @@ public class Input {
     		    	break;
     		    case "b":
     		    	if (opt.equals("2")) {
-    					System.out.println(column + " - " + "Date YYYY/MM/DD");
+    					System.out.println(column + " - " + "Date DD/MM/YYYY" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					System.out.println("\n" + column + ": ");
 						String inDate = validateDate("2");
-    					while(inDate.length() != 10) {
+    					while(inDate.length() != size) {
 								inDate += " ";
 						}
     					raf.writeUTF(inDate);
@@ -70,30 +72,15 @@ public class Input {
 					}
     		    	break;
     			case "1":
-    				
-    				/*byte 	‐128 to 127
-					(i.e., ‐27 to 27 – 1) 	8 bits (Two’s Complement)
-					short 	‐32768 to 32767
-					(i.e., ‐215 to 215 – 1) 	16 bits (Two’s Complement)
-					int 	‐2147483648 to 2147483647
-					(i.e., ‐231 to 231 – 1) 	32 bits (Two’s Complement)
-					long 	‐9223372036854775808 to 9223372036854775807
-					(i.e., -263 to 263 – 1) 	64 bits (Two’s Complement)
-					float 	Negative range: ‐3.4028235E+38 to ‐1.4E‐45
-					Positive range: 1.4E‐45 to 3.4028235E+38 	32 bits (IEEE 754 Notation)
-					double 	Negative range: ‐1.7976931348623157E+308 to ‐4.9E‐324
-					Positive range: 4.9E‐324 to 1.7976931348623157E+308 	64 bits (IEEE 754 Notation)*/
-    				
-    				
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "boolean");
+    					System.out.println(column + " - " + "boolean" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = false;
     					boolean inBoolean;
     					System.out.println("Insertar boolean");
     					//boolean inBoolean = true;
     					do {
-    						System.out.println(column + ": ");
+    						System.out.println("\n"+column + ": ");
     						System.out.println("\t1 - true");
     						System.out.println("\t2 - false");
     						temp = sc.nextLine();
@@ -104,6 +91,7 @@ public class Input {
     							inBoolean = false;
     							repeat = false;
     						} else {
+    							System.out.println("El valor ingresado no es valido");
     							repeat = true;
     							inBoolean = true;
     						}
@@ -114,20 +102,26 @@ public class Input {
     			// Solicita char
     			case "2":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "char");
+    					System.out.println(column + " - " + "char" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
-
         				repeat = true;
-        				char inChar;
+        				char inChar = '*';
     					System.out.println("Insertar char");
         				//char inChar = '*';
     					do {
         					try {
 	    						System.out.print(column + ": ");
 	    						temp = sc.nextLine();
-	    						inChar = temp.charAt(0);
-	    						repeat = false;
+	    						if (temp.length() == 1) {
+	    							inChar = temp.charAt(0);
+		    						repeat = false;
+	    						} else if(temp.length() == 0){
+	    							System.out.println("El campo " + column + " no puede estar vacio\n");
+	    						} else {
+	    							System.out.println("El valor ingresado excede la cantidad de caracteres permitido\n");
+	    						}
         					} catch (Exception e) {
+        						System.out.println("El campo " + column + " no puede estar vacio\n");
         						inChar = '*';
         					}
     					}  while(repeat);
@@ -137,15 +131,20 @@ public class Input {
     			// String maximo de 50 caracteres, si es menos de 50 concatena espacios si es mas de 50 vuelve a solicitar
     			case "3":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "String");
+    					System.out.println(column + " - " + "String" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					String inString;
-    					System.out.println("Insertar String (Max 50)");
+    					System.out.println("\nInsertar String (Max "+ size +")");
     					do {
         					System.out.print(column + ": ");
     						inString = sc.nextLine();
-    					} while (inString.length() == 0 || inString.length() > 50);
-    					while (inString.length() < 50) {
+    						if(inString.length() == 0) {
+    							System.out.println("El campo " + column + " no puede estar vacio\n");
+    						} else if(inString.length() > size) {
+    							System.out.println("El valor ingresado excede el tamaño permitido\n");
+    						}
+    					} while (inString.length() == 0 || inString.length() > size);
+    					while (inString.length() < size) {
     						inString +=" ";
     					}
     					raf.writeUTF(inString);
@@ -154,20 +153,37 @@ public class Input {
     			// solicita byte
     			case "4":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "byte");
+    					System.out.println(column + " - " + "byte" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
         				repeat = true;
-        				byte inByte;
+        				byte inByte = 0;
     					System.out.println("Insertar byte");
     					do {
-        					try {
-        						System.out.print(column + ": ");
-        						temp = sc.nextLine();
-        						inByte = Byte.parseByte(temp);
-        						repeat = false;
-        					} catch (Exception e) {
-        						inByte = 0;
-        					}
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inByte = Byte.parseByte(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inByte = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inByte = Byte.parseByte(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inByte = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
+    						}
     					} while(repeat);
     					raf.writeByte(inByte);
     				}
@@ -175,19 +191,36 @@ public class Input {
     			// solicta short
     			case "5":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "short");
+    					System.out.println(column + " - " + "short" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = true;
-        				short inShort;
+        				short inShort = 0;
     					System.out.println("Insertar short");
     					do{
-    						try {
-    							System.out.print(column + ": ");
-        						temp = sc.nextLine();
-        						inShort = Short.parseShort(temp);
-        						repeat = false;
-    						} catch (Exception e) {
-        						inShort = 0;
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inShort = Short.parseShort(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inShort = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inShort = Short.parseShort(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inShort = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
     						}
     					} while(repeat);
     					raf.writeShort(inShort);
@@ -196,19 +229,36 @@ public class Input {
     			// soliicta int
     			case "6":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "int");
+    					System.out.println(column + " - " + "int" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = true;
-        				int inInt;
+        				int inInt = 0;
     					System.out.println("Insertar int");
     					do {
-    						try {
-    							System.out.print(column + ": ");
-        						temp = sc.nextLine();
-        						inInt = Integer.parseInt(temp);
-        						repeat = false;
-    						}catch (Exception e) {
-        						inInt = 0;
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inInt = Integer.parseInt(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inInt = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inInt = Integer.parseInt(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inInt = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
     						}
     					} while (repeat);
     					raf.writeInt(inInt);
@@ -217,19 +267,36 @@ public class Input {
     			// solicita long
     			case "7":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "long");
+    					System.out.println(column + " - " + "long" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = true;
-        				long inLong;
+        				long inLong = 0;
     					System.out.println("Insertar long");
     					do {
-    						try {
-    							System.out.print(column + ": ");
-    							temp = sc.nextLine();
-        						inLong = Long.parseLong(temp);
-        						repeat = false;
-    						}catch (Exception e) {
-        						inLong = 0;
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inLong = Long.parseLong(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inLong = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inLong = Long.parseLong(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inLong = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
     						}
     					} while (repeat);
     					raf.writeLong(inLong);
@@ -238,19 +305,36 @@ public class Input {
     			// solicita float
     			case "8":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "float");
+    					System.out.println(column + " - " + "float" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = true;
-        				float inFloat;
+        				float inFloat = 0;
     					System.out.println("Insertar float");
     					do {
-    						try {
-    							System.out.print(column + ": ");
-    							temp = sc.nextLine();
-        						inFloat = Float.parseFloat(temp);
-        						repeat = false;
-    						}catch (Exception e) {
-        						inFloat = 0;
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inFloat = Float.parseFloat(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inFloat = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inFloat = Float.parseFloat(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inFloat = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
     						}
     					} while (repeat);
     					raf.writeFloat(inFloat);
@@ -259,19 +343,36 @@ public class Input {
     			// solicita double
     			case "9":
     				if (opt.equals("2")) {
-    					System.out.println(column + " - " + "double");
+    					System.out.println(column + " - " + "double" + " - [" + size + "]");
     				} else if (opt.equals("3")) {
     					repeat = true;
-        				double inDouble;
+        				double inDouble = 0;
     					System.out.println("Insertar double");
     					do {
-    						try {
-    							System.out.print(column + ": ");
-    							temp = sc.nextLine();
-        						inDouble = Double.parseDouble(temp);
-        						repeat = false;
-    						}catch (Exception e) {
-        						inDouble = 0;
+    						System.out.print(column + ": ");
+    						temp = sc.nextLine();
+    						if (temp.length() != 0) {
+    							if (temp.charAt(0) == '-' && temp.length() <= (size + 1)) {
+        							try {
+        								inDouble = Double.parseDouble(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inDouble = 0;
+                					}
+        						} else if (temp.length() <= size) {
+        							try {
+        								inDouble = Double.parseDouble(temp);
+                						repeat = false;
+                					} catch (Exception e) {
+                						System.out.println("El valor ingresado no es valido\n");
+                						inDouble = 0;
+                					}
+        						} else {
+        							System.out.println("El valor ingresado excede la cantidad de digitos permitida\n");
+        						}
+    						} else {
+    							System.out.println("El campo " + column + " no puede estar vacio");
     						}
     					} while (repeat);
     					raf.writeDouble(inDouble);
@@ -332,12 +433,14 @@ public class Input {
 	    	RandomAccessFile raf = null;
 	    	ArrayList<String> index = new ArrayList<String>();
 	    	ArrayList<String> opt = new ArrayList<String>();
+	    	ArrayList<Integer> size = new ArrayList<Integer>();
 	    	try {
 	    		guide = new RandomAccessFile(index1, "r");
 	    		guide.seek(0);
 	    		while(true) {
 	    			index.add(guide.readUTF());
 	    			opt.add(guide.readUTF());
+	    			size.add(guide.readInt());
 	    		} 
 	    	} catch (EOFException e) {
 	    	} catch (IOException e) {
@@ -355,37 +458,37 @@ public class Input {
 	    				// segun el tipo de dato que selecciono el usuario asi se leen los registros
 	    				switch(index.get(i)) {
 	    			    case "a":
-	    			    	System.out.println(opt.get(i) + ": " + raf.readUTF());
+	    			    	System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
 	    			    	break;
 	    			    case "b":
-	    			    	System.out.println(opt.get(i) + ": " + raf.readUTF());
+	    			    	System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
 	    			    	break;
 	    				case "1":
-	    					System.out.println(opt.get(i) + ": " + raf.readBoolean());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readBoolean());
 	    					break;
 	    				case "2":
-	    					System.out.println(opt.get(i) + ": " + raf.readChar());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readChar());
 	    					break;
 	    				case "3":
-	    					System.out.println(opt.get(i) + ": " + raf.readUTF());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
 	    					break;
 	    				case "4":
-	    					System.out.println(opt.get(i) + ": " + raf.readByte());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readByte());
 	    					break;
 	    				case "5":
-	    					System.out.println(opt.get(i) + ": " + raf.readShort());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readShort());
 	    					break;
 	    				case "6":
-	    					System.out.println(opt.get(i) + ": " + raf.readInt());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readInt());
 	    					break;
 	    				case "7":
-	    					System.out.println(opt.get(i) + ": " + raf.readLong());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readLong());
 	    					break;
 	    				case "8":
-	    					System.out.println(opt.get(i) + ": " + raf.readFloat());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readFloat());
 	    					break;
 	    				case "9":
-	    					System.out.println(opt.get(i) + ": " + raf.readDouble());
+	    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readDouble());
 	    					break;
 	    				}
 	    			}
@@ -408,6 +511,7 @@ public class Input {
 		RandomAccessFile raf = null;
 		ArrayList<String> index = new ArrayList<String>();
 		ArrayList<String> opt = new ArrayList<String>();
+		ArrayList<Integer> size = new ArrayList<Integer>();
 		boolean exists = false;
 		try {
 			guide = new RandomAccessFile(index1, "r");
@@ -415,6 +519,7 @@ public class Input {
 			while(true) {
 				index.add(guide.readUTF());
 				opt.add(guide.readUTF());
+				size.add(guide.readInt());
 			} 
 		} catch (EOFException e) {
 		} catch (IOException e) {
@@ -432,39 +537,39 @@ public class Input {
 			    for(byte i = 0; i < index.size(); i++) {
 			    	//System.out.println("***"+raf.getFilePointer()+"***");
 			    	switch(index.get(i)) {
-				    case "a":
-				    	System.out.println(opt.get(i) + ": " + raf.readUTF());
-				    	break;
-				    case "b":
-				    	System.out.println(opt.get(i) + ": " + raf.readUTF());
-				    	break;
-			    	case "1":
-			    		System.out.println(opt.get(i) + ": " + raf.readBoolean());
-			    		break;
-			    	case "2":
-			    		System.out.println(opt.get(i) + ": " + raf.readChar());
-			    		break;
-			    	case "3":
-			    		System.out.println(opt.get(i) + ": " + raf.readUTF());
-			    		break;
-			    	case "4":
-			    		System.out.println(opt.get(i) + ": " + raf.readByte());
-			    		break;
-			    	case "5":
-			    		System.out.println(opt.get(i) + ": " + raf.readShort());
-			    		break;
-			    	case "6":
-			    		System.out.println(opt.get(i) + ": " + raf.readInt());
-			    		break;
-			    	case "7":
-			    		System.out.println(opt.get(i) + ": " + raf.readLong());
-			    		break;
-			    	case "8":
-			    		System.out.println(opt.get(i) + ": " + raf.readFloat());
-			    		break;
-			    	case "9":
-			    		System.out.println(opt.get(i) + ": " + raf.readDouble());
-			    		break;
+			    	case "a":
+    			    	System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
+    			    	break;
+    			    case "b":
+    			    	System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
+    			    	break;
+    				case "1":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readBoolean());
+    					break;
+    				case "2":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readChar());
+    					break;
+    				case "3":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readUTF());
+    					break;
+    				case "4":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readByte());
+    					break;
+    				case "5":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readShort());
+    					break;
+    				case "6":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readInt());
+    					break;
+    				case "7":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readLong());
+    					break;
+    				case "8":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readFloat());
+    					break;
+    				case "9":
+    					System.out.println(opt.get(i) + "(" + size.get(i) + ") " + "- " + raf.readDouble());
+    					break;
 			    	}
 			    }
 			    exists = true;
@@ -568,3 +673,4 @@ public class Input {
 		return (day + "/" + month + "/" + year);
   }
 }
+
