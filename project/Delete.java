@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Cuando se finaliza de leer el archivo, se borra el archivo origina, se renombra el archivo temporal al nombre de la db que fue borrada
  *  */
 public class Delete {
-	public static void delete(String directory, String db, ArrayList<String> column, ArrayList<String> dataType, long num) {
+	public static void delete(String directory, String db, ArrayList<String> column, ArrayList<String> dataType, ArrayList<Integer> size, long num) {
 		File file = new File(db);
 		File temp = new File(directory + "/." + db.substring(10) + "_temp");
 		File deleted = new File(directory + "/." + db.substring(10) + "_deleted");
